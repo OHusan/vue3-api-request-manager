@@ -35,6 +35,10 @@ export default {
         store.dispatch('auth/loginValidate', userInput);
         if (!permission.value) {
           loggedIn();
+        } else {
+          localStorage.setItem('permission', JSON.stringify(permission.value))
+          userInput.username = '';
+          userInput.password = '';
         }
       }
     }

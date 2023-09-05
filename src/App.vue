@@ -1,27 +1,26 @@
 <template>
   <the-header></the-header>
-  <api-manager v-if="!showPage"></api-manager>
+  <api-manager v-if="showPage"></api-manager>
 </template>
 
 <script>
 import TheHeader from './components/TheHeader.vue';
 import ApiManager from './components/ApiManager.vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import store from '@/store/index.js'
-import { ref } from 'vue'
 export default {
   components: {
     TheHeader,
     ApiManager
   },
   setup() {
-    const showApiManager = ref({
-      isVisible: false
-    });
+    const showApiManager = ref(false)
 
     const permission = computed(() => store.getters['auth/permission'])
+    const storedToken = JSON.parse(localStorage.getItem('permission'))
+
     const showPage = computed(() => {
-      return showApiManager.value.isVisible === permission.value
+      return (!showApiManager.value === permission.value || !showApiManager.value === storedToken)
     })
     return {
       permission,

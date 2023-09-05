@@ -1,58 +1,104 @@
 <template>
   <section>
     <div class="container">
-      <form class="form" @submit.prevent="submitForm">
+      <base-button class="button" @click="changeForm">
+        <img src="@/assets/settings.svg" alt="Settings icon" />
+      </base-button>
+      <form v-if="!showForm" @submit.prevent="savingHeaderInput">
+        <p>API header</p>
+        <input type="text" placeholder="Enter name" v-model.trim="headerInput.headerName" />
+        <input type="text" placeholder="Enter Value" v-model.trim="headerInput.headerValue" />
+        <button>Add</button>
+      </form>
+
+      <form class="form" @submit.prevent="submitForm" v-if="showForm">
         <input type="url" id="apiText" placeholder="https://example.com" v-model.trim="urlInput" />
-        <arrow-button></arrow-button>
+        <base-button type='submit'>
+          <img src="@/assets/arrow.svg" alt="arrow button to right" />
+        </base-button>
       </form>
     </div>
   </section>
+
   <section>
     <div class="container-text">
-      <p>{{ urlOutput }}</p>
+      <p>{{ urlLog }}</p>
       <p v-if="errorOutput">{{ errorOutput }}</p>
     </div>
   </section>
 </template>
 
 <script>
-import { ref } from 'vue';
-import ArrowButton from './ArrowButton.vue';
+import { ref, reactive } from 'vue';
 
 export default {
   components: {
-    ArrowButton
+
   },
   setup() {
     const urlInput = ref('')
-    const urlOutput = ref('')
+    const urlLog = ref('')
     const errorOutput = ref('')
+    const showForm = ref(true);
+    const headerInput = reactive({
+      headerName: '',
+      headerValue: '',
+    })
 
     const submitForm = () => {
-      urlOutput.value = '';
+      urlLog.value = '';
       errorOutput.value = '';
+
+      const customHeaders = new Headers();
+      customHeaders.append('Your-Header-Name', 'Your-Header-Value');
+
+      if (headerInput.headerName !== '' && headerInput.headerValue !== '') {
+        fetch(`${urlInput.value}`, {
+          method: 'GET',
+          headers: customHeaders
+        }).then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        }).then((data) => {
+          console.log(data);
+        }).catch((error) => {
+          errorOutput.value = error;
+        })
+      }
 
       fetch(`${urlInput.value}`).then(function (response) {
         if (response.ok) {
           return response.json();
         }
-
       }).then((data) => {
-        urlOutput.value = data;
-        console.log(urlOutput.value);
-
+        urlLog.value = data;
       }).catch((error) => {
         errorOutput.value = error;
       })
 
-      console.log(urlInput.value);
       urlInput.value = '';
     }
+
+    const savingHeaderInput = () => {
+      changeForm();
+
+    }
+
+    const changeForm = () => {
+      showForm.value = !showForm.value;
+    }
+
+
     return {
       urlInput,
       submitForm,
-      urlOutput,
-      errorOutput
+      urlLog,
+      errorOutput,
+      showForm,
+      changeForm,
+      savingHeaderInput,
+      headerInput
     }
   }
 }
@@ -65,6 +111,10 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+
+  .button {
+    margin-right: 10px;
+  }
 
   .form {
     display: flex;

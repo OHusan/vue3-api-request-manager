@@ -10,7 +10,7 @@ export default {
         username: 'admin',
         password: 'admin',
       },
-      permission: false,
+      permission: false, //false
     };
   },
   mutations,
