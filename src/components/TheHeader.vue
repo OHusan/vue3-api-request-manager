@@ -1,26 +1,22 @@
 <template>
   <header class="wrapper">
     <div class="container">
-      <p>Test Me</p>
+      <h2>Test Me</h2>
     </div>
     <div class="container">
-      <form>
-        <div class="input-container">
-          <label for="username">Username</label>
-          <input type="text" id="username" />
-        </div>
-        <div class="input-container">
-          <label for="password">Password</label>
-          <input type="password" id="password" />
-        </div>
-        <button class="button">Submit</button>
-      </form>
+      <login-form></login-form>
     </div>
   </header>
 </template>
 
 <script>
+import LoginForm from './LoginForm.vue';
 
+export default {
+  components: {
+    LoginForm
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -35,38 +31,11 @@
   .container {
     padding: 0.5rem 2rem;
 
-    p {
+
+    h2 {
       font-weight: bold;
       font-size: 24px;
       color: white;
-    }
-
-    form {
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-
-      .input-container {
-        label {
-          margin: 0 10px;
-        }
-
-        input {
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
-      }
-
-      .button {
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-
-        &:active,
-        &:hover {
-          background-color: rgb(195, 194, 194);
-        }
-      }
     }
   }
 }
