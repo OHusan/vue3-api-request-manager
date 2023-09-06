@@ -49,35 +49,52 @@ export default {
       urlLog.value = '';
       errorOutput.value = '';
 
-      const customHeaders = new Headers();
-      customHeaders.append('Your-Header-Name', 'Your-Header-Value');
 
       if (headerInput.headerName !== '' && headerInput.headerValue !== '') {
+        const headers = {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Accept': '*/*',
+          'Origin': 'http://localhost:8080',
+          'Sec-Fetch-Mode': 'no-cors'
+        }
+
+        headers[headerInput.headerName] = headerInput.headerValue
+        console.log(headers)
+        const customHeaders = new Headers(headers);
+
+        // customHeaders[headerInput.headerName] = headerInput.headerValue;
+        // customHeaders.append(headerInput.headerName, headerInput.headerValue);
+        // console.log(customHeaders);
         fetch(`${urlInput.value}`, {
           method: 'GET',
-          headers: customHeaders
+          headers: customHeaders,
         }).then((response) => {
+          console.log(response.status)
           if (response.ok) {
             return response.json();
           }
         }).then((data) => {
+          urlLog.value = data;
           console.log(data);
         }).catch((error) => {
           errorOutput.value = error;
         })
+      } else {
+
+        fetch(`${urlInput.value
+          }`).then(function (response) {
+            if (response.ok) {
+              return response.json();
+            }
+          }).then((data) => {
+            urlLog.value = data;
+          }).catch((error) => {
+            errorOutput.value = error;
+          })
+
+        urlInput.value = '';
       }
-
-      fetch(`${urlInput.value}`).then(function (response) {
-        if (response.ok) {
-          return response.json();
-        }
-      }).then((data) => {
-        urlLog.value = data;
-      }).catch((error) => {
-        errorOutput.value = error;
-      })
-
-      urlInput.value = '';
     }
 
     const savingHeaderInput = () => {
