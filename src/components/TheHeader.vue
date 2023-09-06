@@ -3,6 +3,7 @@
     <div class="container">
       <h2>Test Me</h2>
     </div>
+
     <div class="container">
       <login-form></login-form>
     </div>
@@ -30,7 +31,6 @@ export default {
 
   .container {
     padding: 0.5rem 2rem;
-
 
     h2 {
       font-weight: bold;

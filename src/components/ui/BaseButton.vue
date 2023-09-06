@@ -4,9 +4,6 @@
   </button>
 </template>
 
-<script>
-</script>
-
 <style lang="scss" scoped>
 button {
   background-color: transparent;

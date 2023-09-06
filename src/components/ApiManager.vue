@@ -4,6 +4,7 @@
       <base-button class="button" @click="changeForm">
         <img src="@/assets/settings.svg" alt="Settings icon" />
       </base-button>
+
       <form v-if="!showForm" @submit.prevent="savingHeaderInput">
         <p>API header</p>
         <input type="text" placeholder="Enter name" v-model.trim="headerInput.headerName" />
@@ -49,63 +50,49 @@ export default {
       urlLog.value = '';
       errorOutput.value = '';
 
-
       if (headerInput.headerName !== '' && headerInput.headerValue !== '') {
-        const headers = {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
-          'Accept': '*/*',
-          'Origin': 'http://localhost:8080',
-          'Sec-Fetch-Mode': 'no-cors'
-        }
+        const customHeaders = new Headers();
+        customHeaders.append(headerInput.headerName, headerInput.headerValue);
 
-        headers[headerInput.headerName] = headerInput.headerValue
-        console.log(headers)
-        const customHeaders = new Headers(headers);
-
-        // customHeaders[headerInput.headerName] = headerInput.headerValue;
-        // customHeaders.append(headerInput.headerName, headerInput.headerValue);
-        // console.log(customHeaders);
         fetch(`${urlInput.value}`, {
           method: 'GET',
           headers: customHeaders,
-        }).then((response) => {
-          console.log(response.status)
-          if (response.ok) {
-            return response.json();
-          }
-        }).then((data) => {
-          urlLog.value = data;
-          console.log(data);
-        }).catch((error) => {
-          errorOutput.value = error;
         })
-      } else {
-
-        fetch(`${urlInput.value
-          }`).then(function (response) {
+          .then((response) => {
             if (response.ok) {
               return response.json();
             }
-          }).then((data) => {
-            urlLog.value = data;
-          }).catch((error) => {
-            errorOutput.value = error;
           })
-
-        urlInput.value = '';
+          .then((data) => {
+            urlLog.value = data;
+          })
+          .catch((error) => {
+            errorOutput.value = error;
+          });
+      } else {
+        fetch(`${urlInput.value}`)
+          .then(function (response) {
+            if (response.ok) {
+              return response.json();
+            }
+          })
+          .then((data) => {
+            urlLog.value = data;
+          })
+          .catch((error) => {
+            errorOutput.value = error;
+          });
       }
-    }
+      urlInput.value = '';
+    };
 
     const savingHeaderInput = () => {
       changeForm();
-
     }
 
     const changeForm = () => {
       showForm.value = !showForm.value;
     }
-
 
     return {
       urlInput,

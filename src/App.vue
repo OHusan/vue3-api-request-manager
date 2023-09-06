@@ -4,10 +4,12 @@
 </template>
 
 <script>
+import { computed, ref } from 'vue';
+
 import TheHeader from './components/TheHeader.vue';
 import ApiManager from './components/ApiManager.vue';
-import { computed, ref } from 'vue';
 import store from '@/store/index.js'
+
 export default {
   components: {
     TheHeader,
@@ -17,17 +19,19 @@ export default {
     const showApiManager = ref(false)
 
     const permission = computed(() => store.getters['auth/permission'])
-    const storedToken = JSON.parse(localStorage.getItem('permission'))
+    const storedToken = ref(JSON.parse(localStorage.getItem('permission')))
 
     const showPage = computed(() => {
-      return (!showApiManager.value === permission.value || !showApiManager.value === storedToken)
+      return (!showApiManager.value === permission.value || !showApiManager.value === storedToken.value)
     })
+
     return {
       permission,
       showApiManager,
-      showPage
+      showPage,
+      storedToken
     }
-  }
+  },
 }
 </script>
 
