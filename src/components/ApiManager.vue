@@ -9,7 +9,7 @@
         <p>API header</p>
         <input type="text" placeholder="Enter name" v-model.trim="headerInput.headerName" />
         <input type="text" placeholder="Enter Value" v-model.trim="headerInput.headerValue" />
-        <button>Add</button>
+        <base-button styleOf>Add</base-button>
       </form>
 
       <form class="form" @submit.prevent="submitForm" v-if="showForm">
@@ -33,9 +33,6 @@
 import { ref, reactive } from 'vue';
 
 export default {
-  components: {
-
-  },
   setup() {
     const urlInput = ref('')
     const urlLog = ref('')
@@ -49,42 +46,29 @@ export default {
     const submitForm = () => {
       urlLog.value = '';
       errorOutput.value = '';
+      const customHeaders = new Headers();
 
       if (headerInput.headerName !== '' && headerInput.headerValue !== '') {
-        const customHeaders = new Headers();
         customHeaders.append(headerInput.headerName, headerInput.headerValue);
-
-        fetch(`${urlInput.value}`, {
-          method: 'GET',
-          headers: customHeaders,
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-          })
-          .then((data) => {
-            urlLog.value = data;
-          })
-          .catch((error) => {
-            errorOutput.value = error;
-          });
-      } else {
-        fetch(`${urlInput.value}`)
-          .then(function (response) {
-            if (response.ok) {
-              return response.json();
-            }
-          })
-          .then((data) => {
-            urlLog.value = data;
-          })
-          .catch((error) => {
-            errorOutput.value = error;
-          });
       }
+
+      fetch(`${urlInput.value}`, {
+        method: 'GET',
+        headers: customHeaders
+      })
+        .then(function (response) {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          urlLog.value = data;
+        })
+        .catch((error) => {
+          errorOutput.value = error;
+        });
       urlInput.value = '';
-    };
+    }
 
     const savingHeaderInput = () => {
       changeForm();
@@ -131,6 +115,8 @@ export default {
 }
 
 .container-text {
+  text-align: center;
+
   p {
     margin: 2rem;
   }

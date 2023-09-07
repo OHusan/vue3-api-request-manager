@@ -8,7 +8,7 @@
       <label for="password">Password</label>
       <input type="password" id="password" v-model.trim="userInput.password" @focus="resetShowText" />
     </div>
-    <button class="button">Login</button>
+    <base-button styleOf>Login</base-button>
   </form>
   <p v-if="isLoggedIn">Please login with correct credentials!</p>
 </template>
@@ -43,12 +43,12 @@ export default {
       }
     }
 
-    const resetShowText = () => {
-      isLoggedIn.value = false;
-    }
-
     const loggedIn = () => {
       return isLoggedIn.value = true;
+    }
+
+    const resetShowText = () => {
+      isLoggedIn.value = false;
     }
 
     return {
@@ -78,17 +78,6 @@ form {
     input {
       border-radius: 5px;
       border: 1px solid #ccc;
-    }
-  }
-
-  .button {
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-
-    &:active,
-    &:hover {
-      background-color: rgb(195, 194, 194);
     }
   }
 }
