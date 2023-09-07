@@ -4,6 +4,8 @@
     <login-form></login-form>
   </div>
   <api-manager v-if="showPage"></api-manager>
+  <hr>
+  <data-changer></data-changer>
 </template>
 
 <script>
@@ -12,13 +14,15 @@ import { computed, ref } from 'vue';
 import PageHeader from './components/PageHeader.vue';
 import ApiManager from './components/ApiManager.vue';
 import LoginForm from './components/LoginForm.vue';
+import DataChanger from './components/DataChanger.vue';
 import store from '@/store/index.js'
 
 export default {
   components: {
     PageHeader,
     ApiManager,
-    LoginForm
+    LoginForm,
+    DataChanger
   },
   setup() {
     const showApiManager = ref(false)
