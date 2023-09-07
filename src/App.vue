@@ -1,19 +1,24 @@
 <template>
-  <the-header></the-header>
+  <div class="wrapper">
+    <page-header></page-header>
+    <login-form></login-form>
+  </div>
   <api-manager v-if="showPage"></api-manager>
 </template>
 
 <script>
 import { computed, ref } from 'vue';
 
-import TheHeader from './components/TheHeader.vue';
+import PageHeader from './components/PageHeader.vue';
 import ApiManager from './components/ApiManager.vue';
+import LoginForm from './components/LoginForm.vue';
 import store from '@/store/index.js'
 
 export default {
   components: {
-    TheHeader,
-    ApiManager
+    PageHeader,
+    ApiManager,
+    LoginForm
   },
   setup() {
     const showApiManager = ref(false)
@@ -40,5 +45,13 @@ export default {
 
 body {
   margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #15769b;
 }
 </style>

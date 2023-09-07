@@ -1,16 +1,18 @@
 <template>
-  <form @submit.prevent="submitForm">
-    <div class="input-container">
-      <label for="username">Username</label>
-      <input type="text" id="username" v-model.trim="userInput.username" @focus="resetShowText" />
-    </div>
-    <div class="input-container">
-      <label for="password">Password</label>
-      <input type="password" id="password" v-model.trim="userInput.password" @focus="resetShowText" />
-    </div>
-    <base-button styleOf>Login</base-button>
-  </form>
-  <p v-if="isLoggedIn">Please login with correct credentials!</p>
+  <div class="wrapper">
+    <form @submit.prevent="submitForm">
+      <div class="input-container">
+        <label for="username">Username</label>
+        <input type="text" id="username" v-model.trim="userInput.username" @focus="resetShowText" />
+      </div>
+      <div class="input-container">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model.trim="userInput.password" @focus="resetShowText" />
+      </div>
+      <base-button styleOf>Login</base-button>
+    </form>
+    <p v-if="isLoggedIn">Please login with correct credentials!</p>
+  </div>
 </template>
 
 <script>
@@ -64,28 +66,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+.wrapper {
+  padding: 0.5rem 2rem;
 
-  .input-container {
-    label {
-      margin: 0 10px;
-      color: white;
-    }
+  form {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 
-    input {
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    .input-container {
+      label {
+        margin: 0 10px;
+        color: white;
+      }
+
+      input {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
     }
   }
-}
 
-p {
-  text-align: center;
-  margin: 0;
-  margin-top: 1rem;
-  color: rgb(255, 59, 59);
+  p {
+    text-align: center;
+    margin: 0;
+    margin-top: 1rem;
+    color: rgb(255, 59, 59);
+  }
 }
 </style>

@@ -43,7 +43,7 @@ export default {
       headerValue: '',
     })
 
-    const submitForm = () => {
+    const submitForm = async () => {
       urlLog.value = '';
       errorOutput.value = '';
       const customHeaders = new Headers();
@@ -52,21 +52,18 @@ export default {
         customHeaders.append(headerInput.headerName, headerInput.headerValue);
       }
 
-      fetch(`${urlInput.value}`, {
-        method: 'GET',
-        headers: customHeaders
-      })
-        .then(function (response) {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          urlLog.value = data;
-        })
-        .catch((error) => {
-          errorOutput.value = error;
+      try {
+        const response = await fetch(`${urlInput.value}`, {
+          method: 'GET',
+          headers: customHeaders
         });
+        const responseData = await response.json();
+
+        urlLog.value = responseData;
+      } catch (error) {
+        errorOutput.value = error;
+      }
+
       urlInput.value = '';
     }
 
