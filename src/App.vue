@@ -1,28 +1,23 @@
 <template>
   <div class="wrapper">
-    <page-header></page-header>
-    <login-form></login-form>
+    <header-page :showPage="showPage"></header-page>
+    <login-form v-if="!showPage"></login-form>
   </div>
-  <api-manager v-if="showPage"></api-manager>
-  <hr>
-  <data-changer></data-changer>
+  <router-view v-if="showPage"></router-view>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
-import PageHeader from './components/PageHeader.vue';
-import ApiManager from './components/ApiManager.vue';
-import LoginForm from './components/LoginForm.vue';
-import DataChanger from './components/DataChanger.vue';
+import HeaderPage from './pages/HeaderPage.vue';
+import LoginForm from './components/login/LoginForm.vue';
+
 import store from '@/store/index.js'
 
 export default {
   components: {
-    PageHeader,
-    ApiManager,
+    HeaderPage,
     LoginForm,
-    DataChanger
   },
   setup() {
     const showApiManager = ref(false)
@@ -31,7 +26,11 @@ export default {
     const storedToken = ref(JSON.parse(localStorage.getItem('permission')))
 
     const showPage = computed(() => {
-      return (!showApiManager.value === permission.value || !showApiManager.value === storedToken.value)
+      return (permission.value || storedToken.value)
+    })
+
+    watchEffect(() => {
+      console.log(showPage.value, 'text');
     })
 
     return {

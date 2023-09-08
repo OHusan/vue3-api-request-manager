@@ -6,4 +6,7 @@ export default {
         userInput.password === state.user.password
     );
   },
+  changePermission({ commit }) {
+    commit('validate', false);
+  },
 };

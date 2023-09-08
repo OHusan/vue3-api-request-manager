@@ -62,7 +62,7 @@ export default {
 
         console.log(promiseData);
         const formattedData = Object.keys(promiseData).map((id) => ({
-          key: id,
+          id: id,
           name: promiseData[id].name,
           weight: promiseData[id].weight,
         }));
@@ -125,6 +125,8 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  margin-top: 2rem;
+
   .form {
     display: flex;
     justify-content: center;
