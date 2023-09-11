@@ -56,5 +56,14 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #15769b;
+
+  .container {
+    padding: 0.5rem 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 </style>

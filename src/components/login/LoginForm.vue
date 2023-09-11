@@ -88,6 +88,7 @@ export default {
   }
 
   p {
+    display: block;
     text-align: center;
     margin: 0;
     margin-top: 1rem;

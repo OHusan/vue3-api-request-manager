@@ -34,12 +34,6 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 0.5rem 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 
   h2 {
     font-weight: bold;

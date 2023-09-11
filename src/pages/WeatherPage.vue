@@ -1,43 +1,78 @@
 <template>
   <section class="container">
+    <div>
+      <form class="form" @submit.prevent="getLocation">
+        <p>Input city name</p>
+        <input type="text" v-model.trim="searchCity" @keydown="resetCityValue" />
+        <base-button styleOf>Get temperature</base-button>
+      </form>
+      <p v-if="errorText">Please enter valid name for city</p>
+    </div>
+  </section>
+  <section class="container" v-if="isCityEntered">
     <div class="container-card">
-      <p>Bugojno</p>
-      <p>32</p>
+      <p>{{ searchCity }}</p>
+      <p>{{ temperature }} ℃</p>
     </div>
   </section>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 
 export default {
   setup() {
-    // const temperature = ref('');
+    const searchCity = ref('');
+    const temperature = ref('');
+    const geoLocation = reactive({
+      lat: '',
+      lon: ''
+    })
+    const isCityEntered = ref(false);
+    const errorText = ref('');
 
-    const successCallback = async (position) => {
-      const lat = ref(position.coords.latitude);
-      const lon = ref(position.coords.longitude);
+    const getLocation = async () => {
+      try {
+        errorText.value = '';
+        const response = await fetch(`https://api.api-ninjas.com/v1/geocoding?city=` + searchCity.value.toLowerCase(), {
+          method: 'GET',
+          headers: { 'X-Api-Key': 'ZwpMjRrOPq9VlHCX1QnOAQ==hu562roS9ElCQxqY' },
+          contentType: 'application/json',
+        })
+
+        const responseData = await response.json();
+
+        geoLocation.lat = responseData[0].latitude;
+        geoLocation.lon = responseData[0].longitude;
+        isCityEntered.value = true;
+        successCallback();
+      } catch (error) {
+        errorText.value = error
+      }
+    }
+
+    const resetCityValue = () => { isCityEntered.value = false };
+
+    const successCallback = async () => {
       const APIKey = ref('47eb51370270f925c2834c2cb2c01ac7')
 
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat.value}&lon=${lon.value}&appid=${APIKey.value}`)
-
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${geoLocation.lat}&lon=${geoLocation.lon}&units=metric&appid=${APIKey.value}`
+      )
 
       const responseData = await response.json();
 
-      console.log(responseData);
-      console.log(lat.value);
-      console.log(lon.value);
+      searchCity.value = responseData.name;
+      temperature.value = responseData.main.temp;
     };
-
-    const errorCallback = (error) => {
-      console.log(error);
-    };
-
-    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-
 
     return {
-      successCallback
+      searchCity,
+      temperature,
+      isCityEntered,
+      errorText,
+      resetCityValue,
+      getLocation,
     }
   }
 }
@@ -45,6 +80,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  text-align: center;
 
   &-card {
     width: 20%;

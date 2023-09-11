@@ -36,8 +36,6 @@ export default {
     const dataStore = ref([])
 
     const submitForm = async () => {
-      console.log(person)
-
       try {
         const promise = await fetch('https://vue-http-demo-c219d-default-rtdb.firebaseio.com/person.json', {
           method: 'POST',
