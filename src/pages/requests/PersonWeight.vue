@@ -17,23 +17,30 @@
   <section class="text-container">
     <p>Get All data</p>
     <base-button styleOf @click="getData">Get</base-button>
-    <p v-for="data in dataStore" :key="data">{{ data.name }} has weight of {{ data.weight }} <base-button styleOf
+    <p v-for="data in dataStore" :key="data.id">{{ data.name }} has weight of {{ data.weight }} <base-button styleOf
         @click="deleteData(data.id)">DELETE
         THIS ONE</base-button> <base-button @click="putData(data.id)" styleOf>PUT WEIGHT TO 200</base-button>
     </p>
   </section>
 </template>
 
-<script>
-import { reactive, ref, onMounted } from 'vue';
+<script lang="ts">
+import { reactive, ref, onMounted, Ref } from 'vue';
+
+interface PersonInfo {
+  id: string,
+  name: string,
+  weight: number
+}
 
 export default {
   setup() {
-    const person = reactive({
+    const person = reactive<PersonInfo>({
+      id: '',
       name: '',
-      weight: '',
+      weight: 0,
     })
-    const dataStore = ref([])
+    const dataStore: Ref<PersonInfo[]> = ref([])
 
     const submitForm = async () => {
       try {
@@ -48,7 +55,7 @@ export default {
       }
 
       person.name = '';
-      person.weight = '';
+      person.weight = 0;
     }
 
     const getData = async () => {
@@ -64,11 +71,7 @@ export default {
           name: promiseData[id].name,
           weight: promiseData[id].weight,
         }));
-        // const formattedData = promiseData.map((person, id) => ({
-        //   id: id,
-        //   name: person.name,
-        //   weight: person.weight
-        // }))
+
 
         dataStore.value = formattedData;
       } catch (error) {
@@ -76,7 +79,7 @@ export default {
       }
     }
 
-    const deleteData = async (id) => {
+    const deleteData = async (id: string) => {
       try {
         const promise = await fetch(`https://vue-http-demo-c219d-default-rtdb.firebaseio.com/person/${id}.json`, {
           method: 'DELETE'
@@ -88,7 +91,7 @@ export default {
       }
     }
 
-    const putData = async (id) => {
+    const putData = async (id: string) => {
       try {
         const promise = await fetch(`https://vue-http-demo-c219d-default-rtdb.firebaseio.com/person/${id}.json`, {
           method: 'PATCH',

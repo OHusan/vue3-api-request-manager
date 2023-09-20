@@ -6,13 +6,15 @@
   <router-view v-if="showPage"></router-view>
 </template>
 
-<script>
-import { computed, ref, watchEffect } from 'vue';
+<script lang="ts">
+import { Ref, computed, ref, watchEffect } from 'vue';
 
 import HeaderPage from './pages/HeaderPage.vue';
 import LoginForm from './components/login/LoginForm.vue';
 
-import store from '@/store/index.js'
+import store from '@/store/index'
+
+type Token = string | null;
 
 export default {
   components: {
@@ -23,8 +25,14 @@ export default {
     const showApiManager = ref(false)
 
     const permission = computed(() => store.getters['auth/permission'])
-    const storedToken = ref(JSON.parse(localStorage.getItem('permission')))
+    // const storedToken:Ref<Token> = ref(JSON.parse(localStorage.getItem('permission')))
+    const storedToken: Ref<Token> = ref(null); // Initialize it with null
 
+    const localStorageToken = localStorage.getItem('permission');
+    if (localStorageToken !== null) {
+      // Parse the token from localStorage and assign it
+      storedToken.value = JSON.parse(localStorageToken);
+    }
     const showPage = computed(() => {
       return (permission.value || storedToken.value)
     })
@@ -44,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 body {
   margin: 0;

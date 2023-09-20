@@ -29,16 +29,21 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, reactive } from 'vue';
+
+interface headerTypes {
+  headerName: string,
+  headerValue: string
+}
 
 export default {
   setup() {
-    const urlInput = ref('')
-    const urlLog = ref('')
-    const errorOutput = ref('')
-    const showForm = ref(true);
-    const headerInput = reactive({
+    const urlInput = ref<string>('')
+    const urlLog = ref<string>('')
+    const errorOutput = ref<string>('')
+    const showForm = ref<boolean>(true);
+    const headerInput = reactive<headerTypes>({
       headerName: '',
       headerValue: '',
     })
@@ -60,7 +65,7 @@ export default {
         const responseData = await response.json();
 
         urlLog.value = responseData;
-      } catch (error) {
+      } catch (error: any) {
         errorOutput.value = error;
       }
 
@@ -71,7 +76,7 @@ export default {
       changeForm();
     }
 
-    const changeForm = () => {
+    const changeForm = (): void => {
       showForm.value = !showForm.value;
     }
 

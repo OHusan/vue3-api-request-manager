@@ -5,20 +5,26 @@
       <router-link class="router" to="/apiManager">Api management</router-link>
       <router-link class="router" to="/person">Weight manager</router-link>
       <router-link class="router" to="/weather">Weather</router-link>
+      <router-link class="router" to="/request-center">Request-center</router-link>
     </nav>
     <base-button styleOf @click="logout" v-if="showPage">Logout</base-button>
   </header>
 </template>
 
-<script>
+<script type="ts">
 import { useRouter } from 'vue-router';
-import store from '@/store/index.js'
+import { defineComponent } from 'vue';
+
+import store from '@/store/index'
 
 
-export default {
-  props: ['showPage'],
+export default defineComponent({
+  props: {
+    showPage: Boolean
+  },
   setup() {
     const router = useRouter();
+
     const logout = () => {
       localStorage.removeItem('permission');
       store.dispatch('auth/changePermission');
@@ -29,7 +35,7 @@ export default {
       logout
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

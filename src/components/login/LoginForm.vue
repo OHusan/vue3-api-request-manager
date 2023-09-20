@@ -15,19 +15,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, computed, ref } from 'vue';
-import store from '@/store/index.js'
+import store from '@/store/index'
+
+interface userTypes {
+  username: string,
+  password: string,
+}
 
 export default {
   setup() {
-    const userInput = reactive({
+    const userInput = reactive<userTypes>({
       username: '',
       password: ''
     })
     const isLoggedIn = ref(false);
 
-    const authData = computed(() => store.getters['auth/user'])
+    // const authData = computed(() => store.getters['auth/user'])
     const permission = computed(() => store.getters['auth/permission'])
 
     const submitForm = () => {
@@ -58,7 +63,7 @@ export default {
       submitForm,
       loggedIn,
       isLoggedIn,
-      authData,
+      // authData,
       resetShowText
     }
   }

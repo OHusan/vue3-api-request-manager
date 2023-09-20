@@ -17,27 +17,34 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, reactive } from 'vue';
+
+interface geoLoc {
+  lat: string,
+  lon: string
+}
 
 export default {
   setup() {
-    const searchCity = ref('');
-    const temperature = ref('');
-    const geoLocation = reactive({
+    const searchCity = ref<string>('');
+    const temperature = ref<number>();
+    const geoLocation = reactive<geoLoc>({
       lat: '',
       lon: ''
     })
-    const isCityEntered = ref(false);
-    const errorText = ref('');
+    const isCityEntered = ref<boolean>(false);
+    const errorText = ref<string | unknown>('');
 
     const getLocation = async () => {
       try {
         errorText.value = '';
         const response = await fetch(`https://api.api-ninjas.com/v1/geocoding?city=` + searchCity.value.toLowerCase(), {
           method: 'GET',
-          headers: { 'X-Api-Key': 'ZwpMjRrOPq9VlHCX1QnOAQ==hu562roS9ElCQxqY' },
-          contentType: 'application/json',
+          headers: {
+            'X-Api-Key': 'ZwpMjRrOPq9VlHCX1QnOAQ==hu562roS9ElCQxqY',
+            'content-type': 'application/json'
+          },
         })
 
         const responseData = await response.json();
