@@ -1,38 +1,136 @@
 <template>
-  <div class="container">
-    <h2>Requests</h2>
-    <div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Start date</th>
-            <th>End date</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Approve</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <th>22.2.2022</th>
-            <th>23.2.2022</th>
-            <th>Vacation</th>
-            <th class="pending">
-              <p>Pending</p>
-            </th>
-            <th><button class="btn approve">Approve</button></th>
-            <th><button class="btn reject">Reject</button></th>
-          </tr>
-        </tbody>
-      </table>
+  <section>
+    <div class="container">
+      <h2>Requesting days off</h2>
+      <form class="form" @submit.prevent="handleSubmit">
+        <div class="form-control">
+          <label for="absence">Type of absence</label>
+          <select id="absence" v-model="requestDaysOff.requestTypes">
+            <option v-for="(type, i) of requestTypes" :key="i">{{ type }}</option>
+          </select>
+        </div>
+        <div class="form-control">
+          <div class="date-control">
+            <label for="dateFrom">From date</label>
+            <label for="dateTo">Date Until</label>
+          </div>
+          <div class="date-control">
+            <input type="date" id="dateFrom" v-model="requestDaysOff.startDate">
+            <input type="date" id="dateTo" v-model="requestDaysOff.endDate">
+          </div>
+        </div>
+        <button type="submit" class="btn approve">Request absence</button>
+      </form>
     </div>
-  </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Requests</h2>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Start date</th>
+              <th>End date</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Approve</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody v-if="requestDaysOffGet">
+            <tr v-for="(request, i) of requestDaysOffGet" :key="i">
+              <td>Name</td>
+              <td>{{ request[i].startDate }}</td>
+              <td>{{ request[i].endDate }}</td>
+              <td>{{ request[i].requestTypes }}</td>
+              <td class="pending">
+                <p>{{ request[i].status }}</p>
+              </td>
+              <td><button class="btn approve">Approve</button></td>
+              <td><button class="btn reject">Reject</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
+import { reactive, ref, onMounted } from 'vue';
+
+
+type RequestDaysType = {
+  requestTypes: string,
+  startDate?: Date | null,
+  endDate?: Date | null,
+  status: string
+}
+
+export default {
+  setup() {
+    const requestDaysOff = reactive<RequestDaysType>({
+      requestTypes: '',
+      startDate: null,
+      endDate: null,
+      status: ''
+    })
+
+    const requestDaysOffGet = ref<any>([]);
+
+    const requestTypes = ref<string[]>(["Vacation", "Day off", "Sick leave"])
+
+    const handleSubmit = async () => {
+      requestDaysOff.status = 'pending';
+
+      const res = await fetch('http://localhost:3000/requestDays', {
+        method: 'POST',
+        body: JSON.stringify({
+          requestTypes: requestDaysOff.requestTypes,
+          startDate: requestDaysOff.startDate,
+          endDate: requestDaysOff.endDate,
+          status: requestDaysOff.status
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      console.log(res);
+
+      requestDaysOff.startDate = null;
+      requestDaysOff.endDate = null;
+      requestDaysOff.requestTypes = '';
+    }
+
+    const getRequestsDaysOff = async () => {
+      try {
+
+        const res = await fetch('http://localhost:3000/requestDays');
+
+        const responseData: any = await res.json();
+        console.log(responseData, 'doso data')
+
+        requestDaysOffGet.value.push(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    onMounted(async () => {
+      await getRequestsDaysOff()
+    })
+
+
+    return {
+      requestDaysOff,
+      requestTypes,
+      handleSubmit,
+      onMounted,
+      requestDaysOffGet
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -40,6 +138,25 @@
   margin: 30px 70px;
   padding: 10px 10px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    padding: 10px 32px;
+    display: inline-block;
+    border: none;
+    border-radius: 30px;
+
+    &.approve {
+      background-color: #F6F3F3;
+      color: #C6932E;
+    }
+
+    &.reject {
+      background-color: #EF233C;
+      color: #1A1A1A;
+    }
+  }
 
   .table {
     width: 100%;
@@ -71,23 +188,33 @@
           }
         }
 
-        .btn {
-          display: flex;
-          justify-content: center;
-          padding: 10px 32px;
+      }
+    }
+  }
+
+  .form {
+    text-align: center;
+
+    &-control {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      select {
+        width: 20%;
+      }
+
+      .date-control {
+        label {
           display: inline-block;
-          border: none;
-          border-radius: 30px;
+          margin: 10px;
+        }
 
-          &.approve {
-            background-color: #F6F3F3;
-            color: #C6932E;
-          }
-
-          &.reject {
-            background-color: #EF233C;
-            color: #1A1A1A;
-          }
+        input {
+          margin: 10px;
         }
       }
     }
