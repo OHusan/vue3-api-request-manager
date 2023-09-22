@@ -2,24 +2,38 @@
   "requestDays": [
     {
       "requestTypes": "Vacation",
-      "startDate": "2023-09-23",
-      "endDate": "2023-09-24",
-      "status": "pending",
+      "startDate": "2023-09-22",
+      "endDate": "2023-09-28",
+      "status": "approved",
       "id": 1
     },
     {
-      "requestTypes": "Vacation",
-      "startDate": "2023-09-21",
+      "requestTypes": "Day off",
+      "startDate": "2023-09-22",
       "endDate": "2023-09-23",
-      "status": "pending",
+      "status": "rejected",
       "id": 2
     },
     {
-      "requestTypes": "Day off",
-      "startDate": "2023-09-21",
+      "requestTypes": "Sick leave",
+      "startDate": "2023-09-22",
       "endDate": "2023-09-23",
-      "status": "pending",
+      "status": "rejected",
       "id": 3
+    },
+    {
+      "requestTypes": "Vacation",
+      "startDate": "2023-09-22",
+      "endDate": "2023-09-23",
+      "status": "approved",
+      "id": 4
+    },
+    {
+      "requestTypes": "Day off",
+      "startDate": "2023-09-23",
+      "endDate": "2023-09-29",
+      "status": "rejected",
+      "id": 5
     }
   ]
 }

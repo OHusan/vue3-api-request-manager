@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, computed, ref, watchEffect } from 'vue';
+import { Ref, computed, ref } from 'vue';
 
 import HeaderPage from './pages/HeaderPage.vue';
 import LoginForm from './components/login/LoginForm.vue';
@@ -37,9 +37,9 @@ export default {
       return (permission.value || storedToken.value)
     })
 
-    watchEffect(() => {
-      console.log(showPage.value, 'text');
-    })
+    // watchEffect(() => {
+    //   console.log(showPage.value, 'text');
+    // })
 
     return {
       permission,

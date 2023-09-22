@@ -41,16 +41,20 @@
             </tr>
           </thead>
           <tbody v-if="requestDaysOffGet">
-            <tr v-for="(request, i) of requestDaysOffGet" :key="i">
+            <tr v-for="(request, i) in requestDaysOffGet.flat()" :key="i">
               <td>Name</td>
-              <td>{{ request[i].startDate }}</td>
-              <td>{{ request[i].endDate }}</td>
-              <td>{{ request[i].requestTypes }}</td>
+              <td>{{ request.startDate }}</td>
+              <td>{{ request.endDate }}</td>
+              <td>{{ request.requestTypes }}</td>
               <td class="pending">
-                <p>{{ request[i].status }}</p>
+                <p class="status-paragraph"
+                  :class="{ 'approve': request.status === 'approved', 'reject': request.status === 'rejected' }">{{
+                    request.status }}</p>
               </td>
-              <td><button class="btn approve">Approve</button></td>
-              <td><button class="btn reject">Reject</button></td>
+              <td v-if="request.status === 'pending'"><button class="btn approve"
+                  @click="approveDaysOff(i)">Approve</button></td>
+              <td v-if="request.status === 'pending'"><button class="btn reject" @click="rejectDaysOff(i)">Reject</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -79,6 +83,7 @@ export default {
       status: ''
     })
 
+    const statusDaysOff = ref<boolean>();
     const requestDaysOffGet = ref<any>([]);
 
     const requestTypes = ref<string[]>(["Vacation", "Day off", "Sick leave"])
@@ -101,33 +106,62 @@ export default {
       requestDaysOff.startDate = null;
       requestDaysOff.endDate = null;
       requestDaysOff.requestTypes = '';
+      await getRequestsDaysOff();
     }
 
     const getRequestsDaysOff = async () => {
       try {
-
         const res = await fetch('http://localhost:3000/requestDays');
 
         const responseData: any = await res.json();
-        console.log(responseData, 'doso data')
 
-        requestDaysOffGet.value.push(responseData);
+        requestDaysOffGet.value = responseData;
       } catch (error) {
         console.log(error);
       }
+    }
+
+    const updateStatus = async (index: number) => {
+      try {
+        const res = await fetch('http://localhost:3000/requestDays/' + index, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            status: (statusDaysOff.value ? 'approved' : 'rejected')
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        })
+
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+
+      await getRequestsDaysOff();
+    }
+
+    const approveDaysOff = (index: number) => {
+      statusDaysOff.value = true;
+      updateStatus(index + 1);
+    }
+    const rejectDaysOff = (index: number) => {
+      statusDaysOff.value = false;
+      updateStatus(index + 1);
     }
 
     onMounted(async () => {
       await getRequestsDaysOff()
     })
 
-
     return {
       requestDaysOff,
       requestTypes,
       handleSubmit,
       onMounted,
-      requestDaysOffGet
+      requestDaysOffGet,
+      approveDaysOff,
+      rejectDaysOff
     }
   }
 }
@@ -180,11 +214,20 @@ export default {
         border-bottom: 1px solid #000;
 
         .pending {
-          p {
+          .status-paragraph {
             border-radius: 10px;
             background-color: #ffb07426;
+            color: #1A1A1A;
             display: inline-block;
             padding: 10px 32px;
+
+            &.approve {
+              background-color: #5B826659;
+            }
+
+            &.reject {
+              background-color: #EF233CCC;
+            }
           }
         }
 
